@@ -14,12 +14,10 @@ export class TsLogger {
     protected _formatter: ILogFormatter;
 
     constructor(settings?: ILoggerSettings) {
-        const { LOG_LEVEL, LOG_FORMAT } = process.env;
-
         this._defaultSettings = {
-            minLevel: settings?.minLevel || LogLevel[LOG_LEVEL as LogLevelName] || LogLevel.INFO,
-            name: settings?.name || undefined,
-            format: settings?.format || LogFormat[LOG_FORMAT as LogFormatName] || LogFormat.text,
+            minLevel: LogLevel.INFO,
+            name: undefined,
+            format: LogFormat.text,
             useStructuredErrors: false,
             //maskValuesOfKeys: ["authorization", "password", "senha"],
             //maskPlaceholder: "***",
@@ -30,7 +28,17 @@ export class TsLogger {
                 //return ctx.request.headers['x-request-id'] as string;
             }
         };
+
         const newSettings: ILoggerSettings = settings ?? {};
+
+        const { LOG_LEVEL, LOG_FORMAT } = process.env;
+
+        if (!newSettings.minLevel) {
+            newSettings.minLevel = LogLevel[LOG_LEVEL as LogLevelName] || this._defaultSettings.minLevel;
+        }
+        if (!newSettings.format) {
+            newSettings.format = LogFormat[LOG_FORMAT as LogFormatName] || this._defaultSettings.format;
+        }
 
         this._currentSettings = {
             ...this._defaultSettings,
@@ -51,6 +59,10 @@ export class TsLogger {
     public get settings(): ILoggerSettings {
         // Return a read-only copy.
         return { ...this._currentSettings };
+    }
+
+    public get formatter(): ILogFormatter {
+        return this._formatter;
     }
 
     public writeMessage(level: LogLevel, message: unknown): void {
