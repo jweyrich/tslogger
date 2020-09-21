@@ -33,10 +33,10 @@ export class TsLogger {
 
         const { LOG_LEVEL, LOG_FORMAT } = process.env;
 
-        if (!newSettings.minLevel) {
+        if (!('minLevel' in newSettings)) {
             newSettings.minLevel = LogLevel[LOG_LEVEL as LogLevelName] || this._defaultSettings.minLevel;
         }
-        if (!newSettings.format) {
+        if (!('format' in newSettings)) {
             newSettings.format = LogFormat[LOG_FORMAT as LogFormatName] || this._defaultSettings.format;
         }
 
