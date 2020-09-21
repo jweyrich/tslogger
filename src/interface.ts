@@ -35,7 +35,9 @@ export interface ILogFormatter {
     formatError(error: Error): any;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     formatContext(context: ContextType): any;
-    formatTrace(trace: ILogTrace): string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    formatTrace(trace: ILogTrace): any;
+    stackFrames(error: Error): ErrorStackParser.StackFrame[];
 }
 
 //
@@ -53,8 +55,8 @@ export interface ILoggerSettings {
     // format: default is `LogFormat.text`
     format?: LogFormat;
 
-    // useStructuredErrors: default is `false`
-    useStructuredErrors?: boolean;
+    // useStructuredStacktraces: default is `false`
+    useStructuredStacktraces?: boolean;
 
     // ...
     requestIdGetter?: TRequestIdGetterFn;
@@ -89,5 +91,9 @@ export class TLogEntry implements ILogEntry {
 export interface ILogEntryError {
     name: string;
     message: string;
+    frames: ErrorStackParser.StackFrame[] | string[];
+}
+
+export interface ILogEntryTrace {
     frames: ErrorStackParser.StackFrame[] | string[];
 }

@@ -18,7 +18,7 @@ export class TsLogger {
             minLevel: LogLevel.INFO,
             name: undefined,
             format: LogFormat.text,
-            useStructuredErrors: false,
+            useStructuredStacktraces: false,
             //maskValuesOfKeys: ["authorization", "password", "senha"],
             //maskPlaceholder: "***",
 

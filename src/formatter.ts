@@ -1,6 +1,15 @@
 //import { inspect } from 'util';
 import * as ErrorStackParser from 'error-stack-parser';
-import { ContextType, ILoggerSettings, ILogEntryError, ILogFormatter, LogLevel, ILogTrace, ILogEntry } from './interface';
+import {
+    ContextType,
+    ILoggerSettings,
+    ILogEntryError,
+    ILogEntryTrace,
+    ILogFormatter,
+    LogLevel,
+    ILogTrace,
+    ILogEntry
+} from './interface';
 
 export class BaseFormatter {
     protected _settings: ILoggerSettings;
@@ -17,10 +26,18 @@ export class BaseFormatter {
     public convertContext(context: ContextType): string {
         return JSON.stringify(context);
     }
+
+    public stackFrames(error: Error): ErrorStackParser.StackFrame[] {
+        return ErrorStackParser.parse(error);
+    }
 }
 
 export class TextFormatter extends BaseFormatter implements ILogFormatter {
     constructor(settings: ILoggerSettings) { super(settings); }
+
+    public static get joinChar(): string {
+        return ' ';
+    }
 
     public format(entry: ILogEntry): string {
         const items: Array<unknown> = [];
@@ -47,14 +64,15 @@ export class TextFormatter extends BaseFormatter implements ILogFormatter {
             items.push(this.formatTrace(entry.trace));
         }
 
-        return items.join(' ');
+        // IMPORTANT: Remember we always have this joinChar even if there's a '\n' at the beggining/end!
+        return items.join(TextFormatter.joinChar);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     public formatError(error: Error): any {
-        const frames: ErrorStackParser.StackFrame[] = ErrorStackParser.parse(error);
+        const frames: ErrorStackParser.StackFrame[] = this.stackFrames(error);
         const frames_as_string: string[] = this.convertStackFrames(frames);
-        return `error{"${error.name}","${error.message}"}\nStacktrace:\n${frames_as_string.join('\n')}`;
+        return `error{"${error.name}","${error.message}"}${TextFormatter.joinChar}\nError:\n${frames_as_string.join('\n')}`;
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -66,10 +84,10 @@ export class TextFormatter extends BaseFormatter implements ILogFormatter {
 
     public formatTrace(trace: ILogTrace): string {
         // We don't use `console.trace` because it prepends a "Trace:" to the generated output.
-        const frames: ErrorStackParser.StackFrame[] = ErrorStackParser.parse(trace);
+        const frames: ErrorStackParser.StackFrame[] = this.stackFrames(trace);
         // Remove frame(s) related to `trace()`
         const frames_as_string: string[] = frames.slice(1).map(frame => frame.source);
-        return '\n' + frames_as_string.join('\n');
+        return `\nTrace:\n${frames_as_string.join('\n')}`;
     }
 }
 
@@ -106,18 +124,12 @@ export class JSONFormatter extends BaseFormatter implements ILogFormatter {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     public formatError(error: Error): any {
-        const frames: ErrorStackParser.StackFrame[] = ErrorStackParser.parse(error);
+        const frames: ErrorStackParser.StackFrame[] = this.stackFrames(error);
         const result: ILogEntryError = {
             name: error.name,
             message: error.message,
-            frames: frames
+            frames: this._settings.useStructuredStacktraces ? frames : this.convertStackFrames(frames)
         };
-
-        if (!this._settings.useStructuredErrors) {
-            const frames_as_string: string[] = this.convertStackFrames(frames);
-            result.frames = frames_as_string;
-        }
-
         return result;
     }
 
@@ -126,11 +138,14 @@ export class JSONFormatter extends BaseFormatter implements ILogFormatter {
         return context;
     }
 
-    public formatTrace(trace: ILogTrace): string {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    public formatTrace(trace: ILogTrace): any {
         // We don't use `console.trace` because it prepends a "Trace:" to the generated output.
-        const frames: ErrorStackParser.StackFrame[] = ErrorStackParser.parse(trace);
-        // Remove frame(s) related to `trace()`
-        const frames_as_string: string[] = frames.slice(1).map(frame => frame.source);
-        return '\n' + frames_as_string.join('\n');
+        // Slice the 1st frame since it's related to `trace()`.
+        const frames: ErrorStackParser.StackFrame[] = this.stackFrames(trace).slice(1);
+        const result: ILogEntryTrace = {
+            frames: this._settings.useStructuredStacktraces ? frames : this.convertStackFrames(frames)
+        };
+        return result;
     }
 }
