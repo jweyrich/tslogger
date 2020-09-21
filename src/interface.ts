@@ -97,3 +97,16 @@ export interface ILogEntryError {
 export interface ILogEntryTrace {
     frames: ErrorStackParser.StackFrame[] | string[];
 }
+
+//
+// Logger
+//
+
+export interface ILogger {
+    trace(message: string, context?: ContextType): ILogEntry;
+    debug(message: string, context?: ContextType): ILogEntry;
+    info(message: string, context?: ContextType): ILogEntry;
+    warn(message: string, context?: ContextType): ILogEntry;
+    error(message: string, context?: ContextType, exception?: Error): ILogEntry;
+    fatal(message: string, context?: ContextType, exception?: Error): ILogEntry;
+}

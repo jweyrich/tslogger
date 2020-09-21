@@ -4,11 +4,12 @@ import {
     LogLevel, LogLevelName,
     LogFormat, LogFormatName, ILogFormatter,
     ILogTrace,
-    ILogEntry, TLogEntry
+    ILogEntry, TLogEntry,
+    ILogger
 } from './interface';
 import { TextFormatter, JSONFormatter } from './formatter';
 
-export class TsLogger {
+export class TsLogger implements ILogger {
     protected _defaultSettings: ILoggerSettings;
     protected _currentSettings: ILoggerSettings = {};
     protected _formatter: ILogFormatter;
