@@ -53,5 +53,8 @@
     "resultDir": "coverage/jest-stare",
     "reportTitle": "tslogger",
     "reportHeadline": "tslogger  "
+  },
+  "directories": {
+    "test": "test"
   }
 }
