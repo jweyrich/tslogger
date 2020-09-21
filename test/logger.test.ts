@@ -114,6 +114,7 @@ describe("the logger", () => {
     expect(spy_writeMessage).toHaveBeenNthCalledWith(5, LogLevel.ERROR, `2020-09-20T10:20:30.456Z 4f732a3d-d136-48d7-ae32-f5895a739413 ERROR dummy context{"strProperty":"value","boolProperty":false,"numberProperty":3.1415,"nullProperty":null,"requestId":"4f732a3d-d136-48d7-ae32-f5895a739413"}`);
     expect(spy_writeMessage).toHaveBeenNthCalledWith(6, LogLevel.FATAL, `2020-09-20T10:20:30.456Z 4f732a3d-d136-48d7-ae32-f5895a739413 FATAL dummy context{"strProperty":"value","boolProperty":false,"numberProperty":3.1415,"nullProperty":null,"requestId":"4f732a3d-d136-48d7-ae32-f5895a739413"}`);
 
+    spy_stack_frames.mockRestore();
     spy_writeMessage.mockRestore();
   });
 
@@ -151,6 +152,7 @@ describe("the logger", () => {
     expect(spy_writeMessage).toHaveBeenNthCalledWith(2, LogLevel.ERROR, `2020-09-20T10:20:30.456Z ERROR dummy error{"Error","dummy error"}${TextFormatter.joinChar}\nError:\n${error_stack}`);
     expect(spy_writeMessage).toHaveBeenNthCalledWith(3, LogLevel.FATAL, `2020-09-20T10:20:30.456Z FATAL dummy error{"Error","dummy error"}${TextFormatter.joinChar}\nError:\n${error_stack}`);
 
+    spy_stack_frames.mockRestore();
     spy_writeMessage.mockRestore();
   });
 
