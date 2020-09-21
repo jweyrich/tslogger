@@ -1,0 +1,57 @@
+{
+  "name": "tslogger",
+  "version": "0.1.0",
+  "description": "A simple TypeScript library to handle logging",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "keywords": [
+    "log",
+    "logging",
+    "cloudwatch"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "prepublish": "npm run build",
+    "lint": "eslint . --ext .ts",
+    "test": "npm run lint && TZ=UTC node_modules/jest/bin/jest.js --coverage --runInBand"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run prettier-format && npm run lint"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jweyrich/tslogger.git"
+  },
+  "author": "Jardel Weyrich",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jweyrich/tslogger/issues"
+  },
+  "homepage": "https://github.com/jweyrich/tslogger#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/error-stack-parser": "^2.0.0",
+    "@types/jest": "^26.0.14",
+    "@types/node": "^14.11.1",
+    "@typescript-eslint/eslint-plugin": "^4.1.1",
+    "@typescript-eslint/parser": "^4.1.1",
+    "error-stack-parser": "^2.0.6",
+    "eslint": "^7.9.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-jest": "^24.0.2",
+    "eslint-plugin-prettier": "^3.1.4",
+    "husky": "^4.3.0",
+    "jest": "^26.4.2",
+    "jest-stare": "^2.2.0",
+    "ts-jest": "^26.4.0",
+    "typescript": "^4.0.3"
+  },
+  "jest-stare": {
+    "coverageLink": "jest-coverage/index.html",
+    "resultDir": "coverage/jest-stare",
+    "reportTitle": "tslogger",
+    "reportHeadline": "tslogger  "
+  }
+}

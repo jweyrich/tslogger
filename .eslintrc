@@ -1,0 +1,48 @@
+{
+    "root": true,
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "project": "./tsconfig.eslint.json"
+    },
+    "plugins": [
+        "@typescript-eslint",
+        "jest"
+    ],
+    "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:@typescript-eslint/recommended-requiring-type-checking",
+        "plugin:jest/recommended",
+        "plugin:jest/style"
+    ],
+    "rules": {
+        // 0=off, 1=warn, 2=error
+        "no-console": 1,
+        "@typescript-eslint/no-explicit-any": 1,
+        "@typescript-eslint/promise-function-async": 2,
+        "@typescript-eslint/unbound-method": [
+            "error",
+            {
+                "ignoreStatic": true
+            }
+        ]
+    },
+    "overrides": [
+        // only for test files
+        {
+            "files": [
+                "test/*.ts",
+                "test/**/*.test.ts"
+            ],
+            "env": {
+                "jest/globals": true
+            },
+            "rules": {
+                "@typescript-eslint/no-var-requires": 0,
+                "@typescript-eslint/no-unsafe-assignment": 0,
+                "@typescript-eslint/unbound-method": 0
+            }
+        }
+    ]
+}
