@@ -28,6 +28,6 @@ logger.fatal("message using the fatal level", null, new Error("fatal error"));
 try {
     throw new RangeError('index out of bounds');
 } catch (e) {
-    logger.fatal("caught a fatal exception", e);
+    logger.fatal("caught a fatal exception", null, e);
 }
 ```
