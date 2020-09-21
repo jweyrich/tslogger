@@ -18,7 +18,7 @@ const someContext = {
     strProperty: "value",
     boolProperty: false,
     numberProperty: 3.1415,
-    nullProperty: null,
+    nullProperty: null as string,
     requestId: "4f732a3d-d136-48d7-ae32-f5895a739413",
 };
 logger.info("message using the info level", someContext);
