@@ -50,8 +50,6 @@ export declare type THostnameGetterFn = (context: ContextType) => string;
 export interface ILoggerSettings {
     name?: string;
 
-    includeHostname?: boolean;
-
     // minLevel: default is `process.env.LOG_LEVEL` or `LogLevel.INFO`
     minLevel?: LogLevel;
 
@@ -60,6 +58,9 @@ export interface ILoggerSettings {
 
     // useStructuredStacktraces: default is `false`
     useStructuredStacktraces?: boolean;
+
+    includeRequestId?: boolean;
+    includeHostname?: boolean;
 
     hostnameGetter?: THostnameGetterFn;
     requestIdGetter?: TRequestIdGetterFn;

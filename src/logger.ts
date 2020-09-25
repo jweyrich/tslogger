@@ -23,15 +23,16 @@ export class TsLogger implements ILogger {
             useStructuredStacktraces: false,
             //maskValuesOfKeys: ["authorization", "password", "senha"],
             //maskPlaceholder: "***",
+            includeRequestId: true,
             includeHostname: true,
 
-            hostnameGetter: (context: ContextType): string => {
-                return hostname();
-            },
             requestIdGetter: (context: ContextType): string => {
                 const contextRecord: Record<string,unknown> = context as Record<string,unknown>;
                 return context ? String(contextRecord['requestId']) : null;
                 //return ctx.request.headers['x-request-id'] as string;
+            },
+            hostnameGetter: (context: ContextType): string => {
+                return hostname();
             }
         };
 
@@ -103,7 +104,7 @@ export class TsLogger implements ILogger {
     public newEntry(level: LogLevel, message: string, context: ContextType, exception: Error, trace: ILogTrace): ILogEntry {
         const entry: ILogEntry = new TLogEntry();
         entry.time = new Date();
-        entry.requestId = this._currentSettings.requestIdGetter(context);
+        entry.requestId = this._currentSettings.includeRequestId ? this._currentSettings.requestIdGetter(context) : undefined;
         entry.hostname = this._currentSettings.includeHostname ? this._currentSettings.hostnameGetter(context) : undefined;
         entry.level = level;
         entry.message = message;
