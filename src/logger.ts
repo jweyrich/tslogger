@@ -5,9 +5,10 @@ import {
     LogFormat, LogFormatName, ILogFormatter,
     ILogTrace,
     ILogEntry, TLogEntry,
-    ILogger
+    ILogger,
 } from './interface';
 import { TextFormatter, JSONFormatter } from './formatter';
+import { hostname } from "os";
 
 export class TsLogger implements ILogger {
     protected _defaultSettings: ILoggerSettings;
@@ -22,7 +23,11 @@ export class TsLogger implements ILogger {
             useStructuredStacktraces: false,
             //maskValuesOfKeys: ["authorization", "password", "senha"],
             //maskPlaceholder: "***",
+            includeHostname: true,
 
+            hostnameGetter: (context: ContextType): string => {
+                return hostname();
+            },
             requestIdGetter: (context: ContextType): string => {
                 const contextRecord: Record<string,unknown> = context as Record<string,unknown>;
                 return context ? String(contextRecord['requestId']) : null;
@@ -99,6 +104,7 @@ export class TsLogger implements ILogger {
         const entry: ILogEntry = new TLogEntry();
         entry.time = new Date();
         entry.requestId = this._currentSettings.requestIdGetter(context);
+        entry.hostname = this._currentSettings.includeHostname ? this._currentSettings.hostnameGetter(context) : undefined;
         entry.level = level;
         entry.message = message;
         entry.exception = exception;

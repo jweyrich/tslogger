@@ -48,6 +48,9 @@ export class TextFormatter extends BaseFormatter implements ILogFormatter {
         if (entry.requestId) {
             items.push(entry.requestId);
         }
+        if (entry.hostname) {
+            items.push(entry.hostname);
+        }
         if (entry.level) {
             items.push(LogLevel[entry.level]);
         }
@@ -102,6 +105,9 @@ export class JSONFormatter extends BaseFormatter implements ILogFormatter {
         }
         if (entry.requestId) {
             obj['requestId'] = entry.requestId;
+        }
+        if (entry.hostname) {
+            obj['hostname'] = entry.hostname;
         }
         if (entry.level) {
             obj['level'] = LogLevel[entry.level];

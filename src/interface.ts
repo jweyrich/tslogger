@@ -45,9 +45,12 @@ export interface ILogFormatter {
 //
 
 export declare type TRequestIdGetterFn = (context: ContextType) => string;
+export declare type THostnameGetterFn = (context: ContextType) => string;
 
 export interface ILoggerSettings {
     name?: string;
+
+    includeHostname?: boolean;
 
     // minLevel: default is `process.env.LOG_LEVEL` or `LogLevel.INFO`
     minLevel?: LogLevel;
@@ -58,7 +61,7 @@ export interface ILoggerSettings {
     // useStructuredStacktraces: default is `false`
     useStructuredStacktraces?: boolean;
 
-    // ...
+    hostnameGetter?: THostnameGetterFn;
     requestIdGetter?: TRequestIdGetterFn;
 }
 
@@ -70,6 +73,7 @@ export declare type ILogTrace = Error;
 
 export interface ILogEntry {
     time?: Date;
+    hostname?: string;
     requestId?: string;
     level?: LogLevel;
     message?: string;
@@ -80,6 +84,7 @@ export interface ILogEntry {
 
 export class TLogEntry implements ILogEntry {
     public time?: Date;
+    public hostname?: string;
     public requestId?: string;
     public level?: LogLevel;
     public message?: string;

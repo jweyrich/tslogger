@@ -48,6 +48,10 @@ describe("the logger", () => {
     /* eslint-enable */
   }
 
+  function mockHostname(context: ContextType): string {
+    return 'host1';
+  }
+
   beforeAll(() => {
     /* eslint-disable */
     // @ts-ignore Constructors for derived classes must contain a 'super' call.ts(2377)
@@ -83,7 +87,7 @@ describe("the logger", () => {
   });
 
   test("text output should be [time level message]", () => {
-    const logger = new TsLogger({ format: LogFormat.text, minLevel: LogLevel.TRACE });
+    const logger = new TsLogger({ format: LogFormat.text, minLevel: LogLevel.TRACE, hostnameGetter: mockHostname });
     const spy_writeMessage = jest.spyOn(logger, 'writeMessage').mockImplementation((level: LogLevel, message: unknown) => { /* do nothing */ });
     const spy_stackFrames = jest.spyOn(logger.formatter, 'stackFrames').mockImplementation((error: Error): ErrorStackParser.StackFrame[] => {
       return ErrorStackParser.parse(MockedExceptions.NODE_WITH_SPACES);
@@ -97,19 +101,19 @@ describe("the logger", () => {
     logger.fatal("message using the fatal level"); // 6
 
     expect(spy_writeMessage).toHaveBeenCalledTimes(6);
-    expect(spy_writeMessage).toHaveBeenNthCalledWith(1, LogLevel.TRACE, `2020-09-20T10:20:30.456Z TRACE message using the trace level${TextFormatter.joinChar}\nTrace:\n${TraceStackAsString}`);
-    expect(spy_writeMessage).toHaveBeenNthCalledWith(2, LogLevel.DEBUG, `2020-09-20T10:20:30.456Z DEBUG message using the debug level`);
-    expect(spy_writeMessage).toHaveBeenNthCalledWith(3, LogLevel.INFO , `2020-09-20T10:20:30.456Z INFO message using the info level`);
-    expect(spy_writeMessage).toHaveBeenNthCalledWith(4, LogLevel.WARN , `2020-09-20T10:20:30.456Z WARN message using the warn level`);
-    expect(spy_writeMessage).toHaveBeenNthCalledWith(5, LogLevel.ERROR, `2020-09-20T10:20:30.456Z ERROR message using the error level`);
-    expect(spy_writeMessage).toHaveBeenNthCalledWith(6, LogLevel.FATAL, `2020-09-20T10:20:30.456Z FATAL message using the fatal level`);
+    expect(spy_writeMessage).toHaveBeenNthCalledWith(1, LogLevel.TRACE, `2020-09-20T10:20:30.456Z host1 TRACE message using the trace level${TextFormatter.joinChar}\nTrace:\n${TraceStackAsString}`);
+    expect(spy_writeMessage).toHaveBeenNthCalledWith(2, LogLevel.DEBUG, `2020-09-20T10:20:30.456Z host1 DEBUG message using the debug level`);
+    expect(spy_writeMessage).toHaveBeenNthCalledWith(3, LogLevel.INFO , `2020-09-20T10:20:30.456Z host1 INFO message using the info level`);
+    expect(spy_writeMessage).toHaveBeenNthCalledWith(4, LogLevel.WARN , `2020-09-20T10:20:30.456Z host1 WARN message using the warn level`);
+    expect(spy_writeMessage).toHaveBeenNthCalledWith(5, LogLevel.ERROR, `2020-09-20T10:20:30.456Z host1 ERROR message using the error level`);
+    expect(spy_writeMessage).toHaveBeenNthCalledWith(6, LogLevel.FATAL, `2020-09-20T10:20:30.456Z host1 FATAL message using the fatal level`);
 
     spy_stackFrames.mockRestore();
     spy_writeMessage.mockRestore();
   });
 
   test("text output should include context when provided", () => {
-    const logger = new TsLogger({ format: LogFormat.text, minLevel: LogLevel.TRACE });
+    const logger = new TsLogger({ format: LogFormat.text, minLevel: LogLevel.TRACE, hostnameGetter: mockHostname });
     const spy_writeMessage = jest.spyOn(logger, 'writeMessage').mockImplementation((level: LogLevel, message: unknown) => { /* do nothing */ });
     const spy_stackFrames = jest.spyOn(logger.formatter, 'stackFrames').mockImplementation((error: Error): ErrorStackParser.StackFrame[] => {
       return ErrorStackParser.parse(MockedExceptions.NODE_WITH_SPACES);
@@ -130,19 +134,19 @@ describe("the logger", () => {
     logger.fatal("dummy", context, null); // 6
 
     expect(spy_writeMessage).toHaveBeenCalledTimes(6);
-    expect(spy_writeMessage).toHaveBeenNthCalledWith(1, LogLevel.TRACE, `2020-09-20T10:20:30.456Z 4f732a3d-d136-48d7-ae32-f5895a739413 TRACE dummy context{"strProperty":"value","boolProperty":false,"numberProperty":3.1415,"nullProperty":null,"requestId":"4f732a3d-d136-48d7-ae32-f5895a739413"}${TextFormatter.joinChar}\nTrace:\n${TraceStackAsString}`);
-    expect(spy_writeMessage).toHaveBeenNthCalledWith(2, LogLevel.DEBUG, `2020-09-20T10:20:30.456Z 4f732a3d-d136-48d7-ae32-f5895a739413 DEBUG dummy context{"strProperty":"value","boolProperty":false,"numberProperty":3.1415,"nullProperty":null,"requestId":"4f732a3d-d136-48d7-ae32-f5895a739413"}`);
-    expect(spy_writeMessage).toHaveBeenNthCalledWith(3, LogLevel.INFO , `2020-09-20T10:20:30.456Z 4f732a3d-d136-48d7-ae32-f5895a739413 INFO dummy context{"strProperty":"value","boolProperty":false,"numberProperty":3.1415,"nullProperty":null,"requestId":"4f732a3d-d136-48d7-ae32-f5895a739413"}`);
-    expect(spy_writeMessage).toHaveBeenNthCalledWith(4, LogLevel.WARN , `2020-09-20T10:20:30.456Z 4f732a3d-d136-48d7-ae32-f5895a739413 WARN dummy context{"strProperty":"value","boolProperty":false,"numberProperty":3.1415,"nullProperty":null,"requestId":"4f732a3d-d136-48d7-ae32-f5895a739413"}`);
-    expect(spy_writeMessage).toHaveBeenNthCalledWith(5, LogLevel.ERROR, `2020-09-20T10:20:30.456Z 4f732a3d-d136-48d7-ae32-f5895a739413 ERROR dummy context{"strProperty":"value","boolProperty":false,"numberProperty":3.1415,"nullProperty":null,"requestId":"4f732a3d-d136-48d7-ae32-f5895a739413"}`);
-    expect(spy_writeMessage).toHaveBeenNthCalledWith(6, LogLevel.FATAL, `2020-09-20T10:20:30.456Z 4f732a3d-d136-48d7-ae32-f5895a739413 FATAL dummy context{"strProperty":"value","boolProperty":false,"numberProperty":3.1415,"nullProperty":null,"requestId":"4f732a3d-d136-48d7-ae32-f5895a739413"}`);
+    expect(spy_writeMessage).toHaveBeenNthCalledWith(1, LogLevel.TRACE, `2020-09-20T10:20:30.456Z 4f732a3d-d136-48d7-ae32-f5895a739413 host1 TRACE dummy context{"strProperty":"value","boolProperty":false,"numberProperty":3.1415,"nullProperty":null,"requestId":"4f732a3d-d136-48d7-ae32-f5895a739413"}${TextFormatter.joinChar}\nTrace:\n${TraceStackAsString}`);
+    expect(spy_writeMessage).toHaveBeenNthCalledWith(2, LogLevel.DEBUG, `2020-09-20T10:20:30.456Z 4f732a3d-d136-48d7-ae32-f5895a739413 host1 DEBUG dummy context{"strProperty":"value","boolProperty":false,"numberProperty":3.1415,"nullProperty":null,"requestId":"4f732a3d-d136-48d7-ae32-f5895a739413"}`);
+    expect(spy_writeMessage).toHaveBeenNthCalledWith(3, LogLevel.INFO , `2020-09-20T10:20:30.456Z 4f732a3d-d136-48d7-ae32-f5895a739413 host1 INFO dummy context{"strProperty":"value","boolProperty":false,"numberProperty":3.1415,"nullProperty":null,"requestId":"4f732a3d-d136-48d7-ae32-f5895a739413"}`);
+    expect(spy_writeMessage).toHaveBeenNthCalledWith(4, LogLevel.WARN , `2020-09-20T10:20:30.456Z 4f732a3d-d136-48d7-ae32-f5895a739413 host1 WARN dummy context{"strProperty":"value","boolProperty":false,"numberProperty":3.1415,"nullProperty":null,"requestId":"4f732a3d-d136-48d7-ae32-f5895a739413"}`);
+    expect(spy_writeMessage).toHaveBeenNthCalledWith(5, LogLevel.ERROR, `2020-09-20T10:20:30.456Z 4f732a3d-d136-48d7-ae32-f5895a739413 host1 ERROR dummy context{"strProperty":"value","boolProperty":false,"numberProperty":3.1415,"nullProperty":null,"requestId":"4f732a3d-d136-48d7-ae32-f5895a739413"}`);
+    expect(spy_writeMessage).toHaveBeenNthCalledWith(6, LogLevel.FATAL, `2020-09-20T10:20:30.456Z 4f732a3d-d136-48d7-ae32-f5895a739413 host1 FATAL dummy context{"strProperty":"value","boolProperty":false,"numberProperty":3.1415,"nullProperty":null,"requestId":"4f732a3d-d136-48d7-ae32-f5895a739413"}`);
 
     spy_stackFrames.mockRestore();
     spy_writeMessage.mockRestore();
   });
 
   test("text output should include errors when provided", () => {
-    const logger = new TsLogger({ format: LogFormat.text, minLevel: LogLevel.TRACE });
+    const logger = new TsLogger({ format: LogFormat.text, minLevel: LogLevel.TRACE, hostnameGetter: mockHostname });
     const spy_writeMessage = jest.spyOn(logger, 'writeMessage').mockImplementation((level: LogLevel, message: unknown) => { /* do nothing */ });
     const spy_stackFrames = jest.spyOn(logger.formatter, 'stackFrames').mockImplementation((error: Error): ErrorStackParser.StackFrame[] => {
       return ErrorStackParser.parse(MockedExceptions.NODE_WITH_SPACES);
@@ -153,16 +157,16 @@ describe("the logger", () => {
     logger.fatal("dummy", null, new Error("dummy error")); // 3
 
     expect(spy_writeMessage).toHaveBeenCalledTimes(3);
-    expect(spy_writeMessage).toHaveBeenNthCalledWith(1, LogLevel.TRACE, `2020-09-20T10:20:30.456Z TRACE dummy${TextFormatter.joinChar}\nTrace:\n${TraceStackAsString}`);
-    expect(spy_writeMessage).toHaveBeenNthCalledWith(2, LogLevel.ERROR, `2020-09-20T10:20:30.456Z ERROR dummy error{"Error","dummy error"}${TextFormatter.joinChar}\nError:\n${ErrorStackAsString}`);
-    expect(spy_writeMessage).toHaveBeenNthCalledWith(3, LogLevel.FATAL, `2020-09-20T10:20:30.456Z FATAL dummy error{"Error","dummy error"}${TextFormatter.joinChar}\nError:\n${ErrorStackAsString}`);
+    expect(spy_writeMessage).toHaveBeenNthCalledWith(1, LogLevel.TRACE, `2020-09-20T10:20:30.456Z host1 TRACE dummy${TextFormatter.joinChar}\nTrace:\n${TraceStackAsString}`);
+    expect(spy_writeMessage).toHaveBeenNthCalledWith(2, LogLevel.ERROR, `2020-09-20T10:20:30.456Z host1 ERROR dummy error{"Error","dummy error"}${TextFormatter.joinChar}\nError:\n${ErrorStackAsString}`);
+    expect(spy_writeMessage).toHaveBeenNthCalledWith(3, LogLevel.FATAL, `2020-09-20T10:20:30.456Z host1 FATAL dummy error{"Error","dummy error"}${TextFormatter.joinChar}\nError:\n${ErrorStackAsString}`);
 
     spy_stackFrames.mockRestore();
     spy_writeMessage.mockRestore();
   });
 
   test("json output should be a valid JSON with {time, level message}", () => {
-    const logger = new TsLogger({ format: LogFormat.json, minLevel: LogLevel.TRACE });
+    const logger = new TsLogger({ format: LogFormat.json, minLevel: LogLevel.TRACE, hostnameGetter: mockHostname });
     const spy_writeMessage = jest.spyOn(logger, 'writeMessage').mockImplementation((level: LogLevel, message: unknown) => { /* do nothing */ });
     const spy_stackFrames = jest.spyOn(logger.formatter, 'stackFrames').mockImplementation((error: Error): ErrorStackParser.StackFrame[] => {
       return ErrorStackParser.parse(MockedExceptions.NODE_WITH_SPACES);
@@ -176,12 +180,12 @@ describe("the logger", () => {
     logger.fatal("message using the fatal level"); // 6
 
     expect(spy_writeMessage).toHaveBeenCalledTimes(6);
-    expect(spy_writeMessage).toHaveBeenNthCalledWith(1, LogLevel.TRACE, `{"time":"2020-09-20T10:20:30.456Z","level":"TRACE","message":"message using the trace level",${TraceStackAsJson}}`);
-    expect(spy_writeMessage).toHaveBeenNthCalledWith(2, LogLevel.DEBUG, `{"time":"2020-09-20T10:20:30.456Z","level":"DEBUG","message":"message using the debug level"}`);
-    expect(spy_writeMessage).toHaveBeenNthCalledWith(3, LogLevel.INFO , `{"time":"2020-09-20T10:20:30.456Z","level":"INFO","message":"message using the info level"}`);
-    expect(spy_writeMessage).toHaveBeenNthCalledWith(4, LogLevel.WARN , `{"time":"2020-09-20T10:20:30.456Z","level":"WARN","message":"message using the warn level"}`);
-    expect(spy_writeMessage).toHaveBeenNthCalledWith(5, LogLevel.ERROR, `{"time":"2020-09-20T10:20:30.456Z","level":"ERROR","message":"message using the error level"}`);
-    expect(spy_writeMessage).toHaveBeenNthCalledWith(6, LogLevel.FATAL, `{"time":"2020-09-20T10:20:30.456Z","level":"FATAL","message":"message using the fatal level"}`);
+    expect(spy_writeMessage).toHaveBeenNthCalledWith(1, LogLevel.TRACE, `{"time":"2020-09-20T10:20:30.456Z","hostname":"host1","level":"TRACE","message":"message using the trace level",${TraceStackAsJson}}`);
+    expect(spy_writeMessage).toHaveBeenNthCalledWith(2, LogLevel.DEBUG, `{"time":"2020-09-20T10:20:30.456Z","hostname":"host1","level":"DEBUG","message":"message using the debug level"}`);
+    expect(spy_writeMessage).toHaveBeenNthCalledWith(3, LogLevel.INFO , `{"time":"2020-09-20T10:20:30.456Z","hostname":"host1","level":"INFO","message":"message using the info level"}`);
+    expect(spy_writeMessage).toHaveBeenNthCalledWith(4, LogLevel.WARN , `{"time":"2020-09-20T10:20:30.456Z","hostname":"host1","level":"WARN","message":"message using the warn level"}`);
+    expect(spy_writeMessage).toHaveBeenNthCalledWith(5, LogLevel.ERROR, `{"time":"2020-09-20T10:20:30.456Z","hostname":"host1","level":"ERROR","message":"message using the error level"}`);
+    expect(spy_writeMessage).toHaveBeenNthCalledWith(6, LogLevel.FATAL, `{"time":"2020-09-20T10:20:30.456Z","hostname":"host1","level":"FATAL","message":"message using the fatal level"}`);
 
     spy_stackFrames.mockRestore();
     spy_writeMessage.mockRestore();
