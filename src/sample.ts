@@ -1,5 +1,4 @@
-import { TsLogger } from './logger';
-import { LogFormat, LogLevel } from './interface';
+import { TsLogger, LogFormat, LogLevel } from './index';
 
 function sample_logger(logger: TsLogger) {
     logger.trace("message using the trace level");

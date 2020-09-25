@@ -11,6 +11,7 @@ npm install https://github.com/jweyrich/tslogger#master
 #### How to use
 
 ```
+import { TsLogger } from 'tslogger';
 const logger = new TsLogger({ format: LogFormat.text, minLevel: LogLevel.TRACE });
 logger.trace("message using the trace level");
 logger.debug("message using the debug level");
