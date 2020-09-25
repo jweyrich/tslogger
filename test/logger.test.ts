@@ -82,7 +82,7 @@ describe("the logger", () => {
     expect(logger.settings.format).toEqual(LogFormat.json);
   });
 
-  test("text output should be [timestamp level message]", () => {
+  test("text output should be [time level message]", () => {
     const logger = new TsLogger({ format: LogFormat.text, minLevel: LogLevel.TRACE });
     const spy_writeMessage = jest.spyOn(logger, 'writeMessage').mockImplementation((level: LogLevel, message: unknown) => { /* do nothing */ });
     const spy_stackFrames = jest.spyOn(logger.formatter, 'stackFrames').mockImplementation((error: Error): ErrorStackParser.StackFrame[] => {
@@ -161,7 +161,7 @@ describe("the logger", () => {
     spy_writeMessage.mockRestore();
   });
 
-  test("json output should be a valid JSON with {timestamp, level message}", () => {
+  test("json output should be a valid JSON with {time, level message}", () => {
     const logger = new TsLogger({ format: LogFormat.json, minLevel: LogLevel.TRACE });
     const spy_writeMessage = jest.spyOn(logger, 'writeMessage').mockImplementation((level: LogLevel, message: unknown) => { /* do nothing */ });
     const spy_stackFrames = jest.spyOn(logger.formatter, 'stackFrames').mockImplementation((error: Error): ErrorStackParser.StackFrame[] => {
@@ -176,12 +176,12 @@ describe("the logger", () => {
     logger.fatal("message using the fatal level"); // 6
 
     expect(spy_writeMessage).toHaveBeenCalledTimes(6);
-    expect(spy_writeMessage).toHaveBeenNthCalledWith(1, LogLevel.TRACE, `{"timestamp":"2020-09-20T10:20:30.456Z","level":"TRACE","message":"message using the trace level",${TraceStackAsJson}}`);
-    expect(spy_writeMessage).toHaveBeenNthCalledWith(2, LogLevel.DEBUG, `{"timestamp":"2020-09-20T10:20:30.456Z","level":"DEBUG","message":"message using the debug level"}`);
-    expect(spy_writeMessage).toHaveBeenNthCalledWith(3, LogLevel.INFO , `{"timestamp":"2020-09-20T10:20:30.456Z","level":"INFO","message":"message using the info level"}`);
-    expect(spy_writeMessage).toHaveBeenNthCalledWith(4, LogLevel.WARN , `{"timestamp":"2020-09-20T10:20:30.456Z","level":"WARN","message":"message using the warn level"}`);
-    expect(spy_writeMessage).toHaveBeenNthCalledWith(5, LogLevel.ERROR, `{"timestamp":"2020-09-20T10:20:30.456Z","level":"ERROR","message":"message using the error level"}`);
-    expect(spy_writeMessage).toHaveBeenNthCalledWith(6, LogLevel.FATAL, `{"timestamp":"2020-09-20T10:20:30.456Z","level":"FATAL","message":"message using the fatal level"}`);
+    expect(spy_writeMessage).toHaveBeenNthCalledWith(1, LogLevel.TRACE, `{"time":"2020-09-20T10:20:30.456Z","level":"TRACE","message":"message using the trace level",${TraceStackAsJson}}`);
+    expect(spy_writeMessage).toHaveBeenNthCalledWith(2, LogLevel.DEBUG, `{"time":"2020-09-20T10:20:30.456Z","level":"DEBUG","message":"message using the debug level"}`);
+    expect(spy_writeMessage).toHaveBeenNthCalledWith(3, LogLevel.INFO , `{"time":"2020-09-20T10:20:30.456Z","level":"INFO","message":"message using the info level"}`);
+    expect(spy_writeMessage).toHaveBeenNthCalledWith(4, LogLevel.WARN , `{"time":"2020-09-20T10:20:30.456Z","level":"WARN","message":"message using the warn level"}`);
+    expect(spy_writeMessage).toHaveBeenNthCalledWith(5, LogLevel.ERROR, `{"time":"2020-09-20T10:20:30.456Z","level":"ERROR","message":"message using the error level"}`);
+    expect(spy_writeMessage).toHaveBeenNthCalledWith(6, LogLevel.FATAL, `{"time":"2020-09-20T10:20:30.456Z","level":"FATAL","message":"message using the fatal level"}`);
 
     spy_stackFrames.mockRestore();
     spy_writeMessage.mockRestore();

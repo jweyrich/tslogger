@@ -42,8 +42,8 @@ export class TextFormatter extends BaseFormatter implements ILogFormatter {
     public format(entry: ILogEntry): string {
         const items: Array<unknown> = [];
 
-        if (entry.timestamp) {
-            items.push(entry.timestamp.toISOString());
+        if (entry.time) {
+            items.push(entry.time.toISOString());
         }
         if (entry.requestId) {
             items.push(entry.requestId);
@@ -97,8 +97,8 @@ export class JSONFormatter extends BaseFormatter implements ILogFormatter {
     public format(entry: ILogEntry): string {
         const obj: Record<string, unknown> = {};
 
-        if (entry.timestamp) {
-            obj['timestamp'] = entry.timestamp.toISOString();
+        if (entry.time) {
+            obj['time'] = entry.time.toISOString();
         }
         if (entry.requestId) {
             obj['requestId'] = entry.requestId;

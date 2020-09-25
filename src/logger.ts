@@ -97,7 +97,7 @@ export class TsLogger implements ILogger {
 
     public newEntry(level: LogLevel, message: string, context: ContextType, exception: Error, trace: ILogTrace): ILogEntry {
         const entry: ILogEntry = new TLogEntry();
-        entry.timestamp = new Date();
+        entry.time = new Date();
         entry.requestId = this._currentSettings.requestIdGetter(context);
         entry.level = level;
         entry.message = message;

@@ -69,7 +69,7 @@ export interface ILoggerSettings {
 export declare type ILogTrace = Error;
 
 export interface ILogEntry {
-    timestamp?: Date;
+    time?: Date;
     requestId?: string;
     level?: LogLevel;
     message?: string;
@@ -79,7 +79,7 @@ export interface ILogEntry {
 }
 
 export class TLogEntry implements ILogEntry {
-    public timestamp?: Date;
+    public time?: Date;
     public requestId?: string;
     public level?: LogLevel;
     public message?: string;
